@@ -7,7 +7,6 @@
         "@koa/router": "^14.0.0",
         "@larksuiteoapi/node-sdk": "^1.55.0",
         "@types/koa": "^3.0.1",
-        "@types/koa-router": "^7.4.9",
         "@types/koa__router": "^12.0.5",
         "await-to-js": "^3.0.0",
         "koa": "^3.1.1",
@@ -78,8 +77,6 @@
     "@types/koa": ["@types/koa@3.0.1", "https://registry.npmmirror.com/@types/koa/-/koa-3.0.1.tgz", { "dependencies": { "@types/accepts": "*", "@types/content-disposition": "*", "@types/cookies": "*", "@types/http-assert": "*", "@types/http-errors": "^2", "@types/keygrip": "*", "@types/koa-compose": "*", "@types/node": "*" } }, "sha512-VkB6WJUQSe0zBpR+Q7/YIUESGp5wPHcaXr0xueU5W0EOUWtlSbblsl+Kl31lyRQ63nIILh0e/7gXjQ09JXJIHw=="],
 
     "@types/koa-compose": ["@types/koa-compose@3.2.9", "https://registry.npmmirror.com/@types/koa-compose/-/koa-compose-3.2.9.tgz", { "dependencies": { "@types/koa": "*" } }, "sha512-BroAZ9FTvPiCy0Pi8tjD1OfJ7bgU1gQf0eR6e1Vm+JJATy9eKOG3hQMFtMciMawiSOVnLMdmUOC46s7HBhSTsA=="],
-
-    "@types/koa-router": ["@types/koa-router@7.4.9", "https://registry.npmmirror.com/@types/koa-router/-/koa-router-7.4.9.tgz", { "dependencies": { "@types/koa": "*" } }, "sha512-YibkqJrFWwwF55YtZo6dORpMj/1zfweHHIZA/qpA+2JPcVbBopAvLjejTcO1ojWAJfzf1tPC+CrPnLDuVRkUEA=="],
 
     "@types/koa__router": ["@types/koa__router@12.0.5", "https://registry.npmmirror.com/@types/koa__router/-/koa__router-12.0.5.tgz", { "dependencies": { "@types/koa": "*" } }, "sha512-1HeLxuDn4n5it1yZYCSyOYXo++73zT0ffoviXnPxbwbxLbvDFEvWD9ZzpRiIpK4oKR0pi+K+Mk/ZjyROjW3HSw=="],
 

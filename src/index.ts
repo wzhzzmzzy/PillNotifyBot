@@ -1,12 +1,22 @@
-import Koa from "koa";
-import koaBody from "koa-body";
+import { DataSource } from "./db/index.js";
 import { FeishuClient } from "./feishu/index.js";
+import { onProcessTerm } from "./utils/process.js";
 
-const server = new Koa();
-server.use(koaBody());
+const dataSource = new DataSource();
+const feishuClient = new FeishuClient({
+  dataSource,
+});
 
-const feishuClient = new FeishuClient();
+const server = Bun.serve({
+  port: 12450,
+  hostname: "0.0.0.0",
+  routes: {
+    "/healthy": new Response("Ok"),
+  },
+});
 
-server.use(feishuClient.routes());
-
-server.listen(12450, "0.0.0.0");
+onProcessTerm({
+  dataSource,
+  feishuClient,
+  server,
+});
