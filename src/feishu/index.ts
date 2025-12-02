@@ -1,5 +1,13 @@
 import * as lark from "@larksuiteoapi/node-sdk";
 import { DataSource } from "../db/index.js";
+import { registerScheduler } from "./scheduler.js";
+import { logger } from "../utils/logger.js";
+
+type Message = Parameters<
+  NonNullable<
+    Parameters<lark.EventDispatcher["register"]>[0]["im.message.receive_v1"]
+  >
+>[0];
 
 export class FeishuClient {
   larkClient: lark.Client;
@@ -31,15 +39,28 @@ export class FeishuClient {
           const {
             message: { chat_id, content },
           } = data;
-          return this.sendTextMessage(chat_id, `收到消息：${content}`);
+
+          logger.info(data);
+          return this.onMessage(data);
         },
 
-        p2p_chat_create: (data) => {},
+        p2p_chat_create: (data) => {
+          const {
+            user: { open_id },
+          } = data;
+
+          logger.info(data);
+          return registerScheduler(open_id);
+        },
       }),
     });
   }
 
   close() {}
+
+  onMessage(message: Message) {
+    console.log("?");
+  }
 
   sendTextMessage(id: string, text: string) {
     return this.larkClient.im.v1.message.create({

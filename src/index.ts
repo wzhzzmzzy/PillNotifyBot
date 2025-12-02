@@ -3,9 +3,9 @@ import { FeishuClient } from "./feishu/index.js";
 import { onProcessTerm } from "./utils/process.js";
 
 const dataSource = new DataSource();
-const feishuClient = new FeishuClient({
-  dataSource,
-});
+// const feishuClient = new FeishuClient({
+//   dataSource,
+// });
 
 const server = Bun.serve({
   port: 12450,
@@ -17,6 +17,6 @@ const server = Bun.serve({
 
 onProcessTerm({
   dataSource,
-  feishuClient,
   server,
+  // feishuClient,
 });

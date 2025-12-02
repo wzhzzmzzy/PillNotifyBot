@@ -7,12 +7,12 @@ export function onProcessTerm({
   server,
 }: {
   dataSource: DataSource;
-  feishuClient: FeishuClient;
   server: Bun.Server<unknown>;
+  feishuClient?: FeishuClient;
 }) {
   function safeTerm() {
     dataSource.term();
-    feishuClient.close();
+    feishuClient?.close();
     server.stop();
 
     console.log("Bye~");

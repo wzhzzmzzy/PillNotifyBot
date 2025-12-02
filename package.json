@@ -12,7 +12,8 @@
     "@types/koa__router": "^12.0.5",
     "await-to-js": "^3.0.0",
     "koa": "^3.1.1",
-    "koa-body": "^7.0.0"
+    "koa-body": "^7.0.0",
+    "pino": "^10.1.0"
   },
   "devDependencies": {
     "@types/bun": "latest"
