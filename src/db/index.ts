@@ -111,4 +111,82 @@ export class DataSource {
     const completedStages = this.getTodayCompletedStages(owner);
     return completedStages.includes(stageId);
   }
+
+  /**
+   * 创建或更新用户的服药计划配置
+   * @param owner 用户的 open_id
+   * @param medicationPlan 服药计划配置
+   * @returns 创建的配置记录 ID
+   */
+  createOrUpdateMedicationPlan(owner: string, medicationPlan: MedicationPlan): number {
+    // 先将之前的配置设置为非活跃状态
+    const deactivateStmt = this.db.prepare(`
+      UPDATE medication_stage_config
+      SET is_active = 0
+      WHERE owner = ? AND is_active = 1
+    `);
+    deactivateStmt.run(owner);
+
+    // 创建新的活跃配置
+    const insertStmt = this.db.prepare(`
+      INSERT INTO medication_stage_config (stage_config, owner, is_active)
+      VALUES (?, ?, 1)
+    `);
+
+    const result = insertStmt.run(JSON.stringify(medicationPlan), owner);
+    return result.lastInsertRowid as number;
+  }
+
+  /**
+   * 记录用户服药
+   * @param owner 用户的 open_id
+   * @param stageId 服药阶段 ID
+   * @returns 创建的记录 ID
+   */
+  recordMedication(owner: string, stageId: number): number {
+    const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
+
+    const stmt = this.db.prepare(`
+      INSERT INTO medication_records (create_at, stage, owner)
+      VALUES (?, ?, ?)
+    `);
+
+    const result = stmt.run(today, stageId, owner);
+    return result.lastInsertRowid as number;
+  }
+
+  /**
+   * 创建一个"未服用"的记录（用于定时任务触发时）
+   * @param owner 用户的 open_id
+   * @param stageId 服药阶段 ID
+   * @returns 创建的记录 ID
+   */
+  createPendingMedicationRecord(owner: string, stageId: number): number {
+    const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
+    const pendingTime = new Date(0); // 使用 1970-01-01 表示未服用状态
+
+    const stmt = this.db.prepare(`
+      INSERT INTO medication_records (create_at, stage, owner, medication_time)
+      VALUES (?, ?, ?, ?)
+    `);
+
+    const result = stmt.run(today, stageId, owner, pendingTime.toISOString());
+    return result.lastInsertRowid as number;
+  }
+
+  /**
+   * 检查用户是否已存在配置
+   * @param owner 用户的 open_id
+   * @returns 如果用户已有配置返回 true，否则返回 false
+   */
+  hasUserConfiguration(owner: string): boolean {
+    const stmt = this.db.prepare(`
+      SELECT COUNT(*) as count
+      FROM medication_stage_config
+      WHERE owner = ?
+    `);
+
+    const result = stmt.get(owner) as { count: number };
+    return result.count > 0;
+  }
 }
