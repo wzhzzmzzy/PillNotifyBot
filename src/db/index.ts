@@ -1,5 +1,6 @@
 import { Database } from "bun:sqlite";
 import { MEDICATION_PLAN_TABLE, MEDICATION_RECORDS_TABLE } from "./tables.js";
+import { logger } from "../utils/logger.js";
 
 // 服药配置的接口定义
 export interface MedicationStageConfig {
@@ -68,7 +69,7 @@ export class DataSource {
       const config = JSON.parse(result.stage_config) as MedicationPlan;
       return config;
     } catch (error) {
-      console.error("Failed to parse stage_config JSON:", error);
+      logger.error(error);
       return null;
     }
   }

@@ -49,9 +49,18 @@ class MedicationScheduler {
       logger.info(`为用户 ${openId} 创建定时任务: ${name} (${time}), cron: ${cronExpression}`);
 
       const job = new Cron(cronExpression, async () => {
+        logger.info(`定时任务开始执行 - 用户: ${openId}, 阶段: ${name} (${time})`);
+
         try {
           if (!this.dataSource || !this.feishuClient) {
             logger.error(`数据源或飞书客户端未初始化`);
+            return;
+          }
+
+          // 获取用户当前的计划配置，确保该阶段仍然存在
+          const currentPlan = this.dataSource.getActiveMedicationPlan(openId);
+          if (!currentPlan || !currentPlan.find(s => s.id === stageId)) {
+            logger.info(`定时任务结束 - 用户 ${openId} 的阶段 ${name} 已被删除，中止执行`);
             return;
           }
 
@@ -59,18 +68,26 @@ class MedicationScheduler {
           const isCompleted = this.dataSource.isStageCompletedToday(openId, stageId);
 
           if (!isCompleted) {
-            // 创建一个"未服用"的记录
-            this.dataSource.createPendingMedicationRecord(openId, stageId);
+            // 检查是否已经有未服用记录存在
+            const todayRecords = this.dataSource.getTodayMedicationRecords(openId);
+            const existingPendingRecord = todayRecords.find(
+              record => record.stage === stageId && record.medication_time === new Date(0).toISOString()
+            );
+
+            if (!existingPendingRecord) {
+              // 如果不存在记录，创建一个"未服用"的记录
+              this.dataSource.createPendingMedicationRecord(openId, stageId);
+            }
 
             // 发送提醒消息
-            await this.feishuClient.sendTextMessage(openId, '吃了吗？');
+            await this.feishuClient.sendTextMessage(openId, `⏰ ${name} 服药提醒时间到了，请记得服药！`);
 
-            logger.info(`已向用户 ${openId} 发送服药提醒: ${name}`);
+            logger.info(`定时任务结束 - 用户 ${openId} 阶段 ${name}: 未服用-发送消息`);
           } else {
-            logger.info(`用户 ${openId} 今天已完成 ${name} 阶段，跳过提醒`);
+            logger.info(`定时任务结束 - 用户 ${openId} 阶段 ${name}: 已服用-中止发送`);
           }
         } catch (error) {
-          logger.error(`发送服药提醒失败 - 用户: ${openId}, 阶段: ${name}: ${error}`);
+          logger.error(`定时任务执行失败 - 用户: ${openId}, 阶段: ${name}: ${error}`);
         }
       });
 

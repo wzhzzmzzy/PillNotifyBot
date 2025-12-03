@@ -6,14 +6,9 @@
     "build": "bun build --compile --target=bun-linux-x64 ./src/index.ts --outfile pill"
   },
   "dependencies": {
-    "@koa/router": "^14.0.0",
     "@larksuiteoapi/node-sdk": "^1.55.0",
-    "@types/koa": "^3.0.1",
-    "@types/koa__router": "^12.0.5",
     "await-to-js": "^3.0.0",
     "croner": "^9.1.0",
-    "koa": "^3.1.1",
-    "koa-body": "^7.0.0",
     "pino": "^10.1.0"
   },
   "devDependencies": {

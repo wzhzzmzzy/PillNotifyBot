@@ -95,7 +95,7 @@ export class FeishuClient {
       }
 
       // 使用业务服务处理消息
-      const result = await this.messageService.handleTextMessage(open_id, text);
+      const result = await this.messageService.handleTextMessage(open_id, text, this);
 
       // 根据处理结果发送响应
       switch (result.type) {
@@ -109,6 +109,10 @@ export class FeishuClient {
           break;
 
         case 'medication_confirm':
+          await this.sendTextMessage(open_id, result.data.message);
+          break;
+
+        case 'plan_command':
           await this.sendTextMessage(open_id, result.data.message);
           break;
 

@@ -18,10 +18,11 @@ export class MessageService {
    * 处理文本消息
    * @param openId 用户的 open_id
    * @param text 消息文本
+   * @param feishuClient 飞书客户端实例（用于更新定时任务）
    * @returns 处理结果
    */
-  async handleTextMessage(openId: string, text: string): Promise<{
-    type: 'modify_plan' | 'medication_confirm' | 'unknown';
+  async handleTextMessage(openId: string, text: string, feishuClient?: any): Promise<{
+    type: 'modify_plan' | 'medication_confirm' | 'plan_command' | 'unknown';
     data?: any;
   }> {
     logger.info(`用户 ${openId} 发送文本消息: ${text}`);
@@ -31,6 +32,15 @@ export class MessageService {
       return {
         type: 'modify_plan',
         data: this.planService.generateTemplateData(openId)
+      };
+    }
+
+    // 处理计划配置命令
+    const planCommandResult = await this.handlePlanCommand(openId, text, feishuClient);
+    if (planCommandResult) {
+      return {
+        type: 'plan_command',
+        data: planCommandResult
       };
     }
 
@@ -51,6 +61,54 @@ export class MessageService {
 
     logger.info(`用户 ${openId} 的消息不匹配任何处理模式: ${text}`);
     return { type: 'unknown' };
+  }
+
+  /**
+   * 处理计划配置命令
+   * @param openId 用户的 open_id
+   * @param text 消息文本
+   * @param feishuClient 飞书客户端实例
+   * @returns 处理结果，如果不是计划命令返回 null
+   */
+  private async handlePlanCommand(openId: string, text: string, feishuClient?: any): Promise<{
+    message: string;
+    success: boolean;
+  } | null> {
+    const trimmedText = text.trim();
+
+    // 清空配置或初始化配置
+    if (trimmedText === "清空配置" || trimmedText === "初始化配置") {
+      return await this.planService.clearUserConfiguration(openId);
+    }
+
+    // 添加阶段命令：支持两种格式
+    // 格式1: "添加阶段早上，提醒时间10点"
+    // 格式2: "添加阶段早上，提醒时间10:30"
+    const addStageMatchHour = trimmedText.match(/^添加阶段(.+?)，提醒时间(\d{1,2})点$/);
+    const addStageMatchTime = trimmedText.match(/^添加阶段(.+?)，提醒时间(\d{1,2}):(\d{2})$/);
+
+    if (addStageMatchHour) {
+      const stageName = addStageMatchHour[1].trim();
+      const hour = parseInt(addStageMatchHour[2]);
+      const minute = 0;
+      return await this.planService.addStage(openId, stageName, hour, minute, feishuClient);
+    }
+
+    if (addStageMatchTime) {
+      const stageName = addStageMatchTime[1].trim();
+      const hour = parseInt(addStageMatchTime[2]);
+      const minute = parseInt(addStageMatchTime[3]);
+      return await this.planService.addStage(openId, stageName, hour, minute, feishuClient);
+    }
+
+    // 删除阶段命令：格式如 "删除阶段早上"
+    const deleteStageMatch = trimmedText.match(/^删除阶段(.+)$/);
+    if (deleteStageMatch) {
+      const stageName = deleteStageMatch[1].trim();
+      return await this.planService.deleteStage(openId, stageName, feishuClient);
+    }
+
+    return null;
   }
 
   /**
