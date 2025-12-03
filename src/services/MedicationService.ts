@@ -18,7 +18,8 @@ export class MedicationService {
    */
   parseMedicationConfirmation(text: string): { stageName: string } | null {
     // 匹配 "XX吃了" 的模式，提取阶段名称
-    const match = text.match(/^(.+?)吃了$/);
+    const trimmedText = text.trim();
+    const match = trimmedText.match(/^(.+?)吃了$/);
     if (match) {
       const stageName = match[1].trim();
       if (stageName.length > 0) {
