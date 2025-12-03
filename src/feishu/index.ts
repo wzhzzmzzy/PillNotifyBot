@@ -1,10 +1,16 @@
 import * as lark from "@larksuiteoapi/node-sdk";
 import { DataSource } from "../db/index.js";
-import { registerScheduler } from "./scheduler.js";
+import { registerScheduler, updateUserSchedule } from "./scheduler.js";
 import { MessageService } from "../services/MessageService.js";
 import { MedicationService } from "../services/MedicationService.js";
 import { PlanService } from "../services/PlanService.js";
 import { logger } from "../utils/logger.js";
+import {
+  MessageContext,
+  MessageStateAction,
+  StateActionType,
+  MessageType
+} from "../types/MessageState.js";
 
 type Message = Parameters<
   NonNullable<
@@ -94,35 +100,89 @@ export class FeishuClient {
         return;
       }
 
+      // 创建消息上下文
+      const context: MessageContext = {
+        openId: open_id,
+        text,
+        timestamp: Date.now()
+      };
+
       // 使用业务服务处理消息
-      const result = await this.messageService.handleTextMessage(open_id, text, this);
+      const result = await this.messageService.processMessage(context);
 
-      // 根据处理结果发送响应
-      switch (result.type) {
-        case 'modify_plan':
-          await this.sendCardMessageByTemplateId(
-            open_id,
-            "AAqXfv48ZgpjT",
-            "1.0.0",
-            result.data
-          );
-          break;
-
-        case 'medication_confirm':
-          await this.sendTextMessage(open_id, result.data.message);
-          break;
-
-        case 'plan_command':
-          await this.sendTextMessage(open_id, result.data.message);
-          break;
-
-        case 'unknown':
-          // 对于未知消息类型，可以选择不响应或发送帮助信息
-          break;
-      }
+      // 根据状态机执行相应的动作
+      await this.executeActions(result.actions, open_id);
 
     } catch (error) {
       logger.error(`处理消息失败: ${error}`);
+    }
+  }
+
+  /**
+   * 执行状态机动作
+   */
+  private async executeActions(actions: MessageStateAction[], contextOpenId: string): Promise<void> {
+    for (const action of actions) {
+      try {
+        await this.executeAction(action, contextOpenId);
+      } catch (error) {
+        logger.error(`执行动作失败: ${error}`);
+      }
+    }
+  }
+
+  /**
+   * 执行单个动作
+   */
+  private async executeAction(action: MessageStateAction, contextOpenId: string): Promise<void> {
+    switch (action.type) {
+      case StateActionType.SEND_MESSAGE:
+        await this.handleSendMessage(action.payload.openId, action.payload.message);
+        break;
+
+      case StateActionType.UPDATE_SCHEDULE:
+        await this.handleUpdateSchedule(action.payload.openId, action.payload.shouldUpdate);
+        break;
+
+      case StateActionType.NO_ACTION:
+        logger.debug('无需执行动作');
+        break;
+
+      default:
+        logger.warn('未知的动作类型', action);
+    }
+  }
+
+  /**
+   * 处理发送消息动作
+   */
+  private async handleSendMessage(openId: string, message: any): Promise<void> {
+    switch (message.type) {
+      case MessageType.TEXT:
+        await this.sendTextMessage(openId, message.content);
+        break;
+
+      case MessageType.CARD:
+        const { templateId, templateVersion, templateVariable } = message.content;
+        await this.sendCardMessageByTemplateId(
+          openId,
+          templateId,
+          templateVersion,
+          templateVariable
+        );
+        break;
+
+      default:
+        logger.warn('未知的消息类型', message);
+    }
+  }
+
+  /**
+   * 处理更新调度动作
+   */
+  private async handleUpdateSchedule(openId: string, shouldUpdate: boolean): Promise<void> {
+    if (shouldUpdate) {
+      updateUserSchedule(openId, this.dataSource, this);
     }
   }
 
