@@ -49,6 +49,12 @@ export class MessageService {
         return medicationResult;
       }
 
+      // 处理历史记录查询
+      const historyResult = await this.processHistoryQuery(openId, text);
+      if (historyResult) {
+        return historyResult;
+      }
+
       // 未知消息类型
       logger.info(`用户 ${openId} 的消息不匹配任何处理模式: ${text}`);
       return {
@@ -235,10 +241,51 @@ export class MessageService {
       return null;
     }
 
+    const { stageName } = medicationResult;
+
+    // 获取用户的当前活跃计划
+    const currentPlan = this.planService.getActivePlan(openId);
+    if (!currentPlan || currentPlan.length === 0) {
+      return {
+        actions: [{
+          type: StateActionType.SEND_MESSAGE,
+          payload: {
+            openId,
+            message: {
+              type: MessageType.TEXT,
+              content: `❌ 您还没有配置任何服药计划，请先发送"修改计划"进行配置`
+            }
+          }
+        }],
+        success: false
+      };
+    }
+
+    // 查找用户配置中是否有匹配的阶段
+    const matchedStage = currentPlan.find(stage => stage.name === stageName);
+    if (!matchedStage) {
+      // 构建用户已配置的阶段列表
+      const configuredStages = currentPlan.map(stage => stage.name).join('、');
+      return {
+        actions: [{
+          type: StateActionType.SEND_MESSAGE,
+          payload: {
+            openId,
+            message: {
+              type: MessageType.TEXT,
+              content: `❌ 您的服药计划中没有"${stageName}"阶段。\n当前已配置的阶段：${configuredStages}\n请确认阶段名称或先配置该阶段。`
+            }
+          }
+        }],
+        success: false
+      };
+    }
+
+    // 找到匹配的阶段，确认服药
     const confirmResult = await this.medicationService.confirmMedication(
       openId,
-      medicationResult.stageId,
-      medicationResult.stageName
+      matchedStage.id,
+      stageName
     );
 
     return {
@@ -252,8 +299,88 @@ export class MessageService {
           }
         }
       }],
+      success: confirmResult.success
+    };
+  }
+
+  /**
+   * 处理历史记录查询
+   */
+  private async processHistoryQuery(openId: string, text: string): Promise<MessageProcessResult | null> {
+    const parsedDate = this.parseDateQuery(text);
+    if (!parsedDate) {
+      return null;
+    }
+
+    const { date, displayName } = parsedDate;
+    const formattedRecords = this.medicationService.formatMedicationRecords(openId, date, displayName);
+
+    return {
+      actions: [{
+        type: StateActionType.SEND_MESSAGE,
+        payload: {
+          openId,
+          message: {
+            type: MessageType.TEXT,
+            content: formattedRecords
+          }
+        }
+      }],
       success: true
     };
+  }
+
+  /**
+   * 解析日期查询文本
+   * @param text 用户输入的文本
+   * @returns 解析结果，包含日期和显示名称，如果不匹配则返回null
+   */
+  private parseDateQuery(text: string): { date: string; displayName: string } | null {
+    const trimmedText = text.trim();
+
+    // 处理相对日期
+    const today = new Date();
+
+    if (trimmedText === "今天") {
+      const date = today.toISOString().split('T')[0];
+      return { date, displayName: "今天" };
+    }
+
+    if (trimmedText === "昨天") {
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      const date = yesterday.toISOString().split('T')[0];
+      return { date, displayName: "昨天" };
+    }
+
+    if (trimmedText === "前天") {
+      const dayBeforeYesterday = new Date(today);
+      dayBeforeYesterday.setDate(today.getDate() - 2);
+      const date = dayBeforeYesterday.toISOString().split('T')[0];
+      return { date, displayName: "前天" };
+    }
+
+    // 处理具体日期格式 YYYY-MM-DD 或 YYYY/MM/DD
+    const datePattern = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/;
+    const match = trimmedText.match(datePattern);
+
+    if (match) {
+      const year = parseInt(match[1]);
+      const month = parseInt(match[2]);
+      const day = parseInt(match[3]);
+
+      // 验证日期有效性
+      const inputDate = new Date(year, month - 1, day);
+      if (inputDate.getFullYear() === year &&
+          inputDate.getMonth() === month - 1 &&
+          inputDate.getDate() === day) {
+
+        const date = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        return { date, displayName: date };
+      }
+    }
+
+    return null;
   }
 
   /**
