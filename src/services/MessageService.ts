@@ -42,7 +42,7 @@ export class MessageService {
 
       // 1. 修改计划消息
       if (trimmedText === "修改计划") {
-        return this.createModifyPlanResult(openId);
+        return await this.handleUserManual(openId);
       }
 
       // 2. 计划管理命令
@@ -149,31 +149,6 @@ export class MessageService {
         error: String(error)
       };
     }
-  }
-
-  /**
-   * 创建修改计划结果
-   */
-  private createModifyPlanResult(openId: string): MessageProcessResult {
-    const templateData = this.planService.generateTemplateData(openId);
-
-    return {
-      actions: [{
-        type: StateActionType.SEND_MESSAGE,
-        payload: {
-          openId,
-          message: {
-            type: MessageType.CARD,
-            content: {
-              templateId: "AAqXfv48ZgpjT",
-              templateVersion: "1.0.0",
-              templateVariable: templateData
-            }
-          }
-        }
-      }],
-      success: true
-    };
   }
 
   /**
@@ -315,7 +290,7 @@ export class MessageService {
       logger.info(`处理Debug通知命令 - 用户: ${openId}, 阶段: ${stageName}`);
 
       // 使用 TaskService 的 debugRun 方法
-      const actions = await this.taskService.debugRun(openId, stageName);
+      const actions = await this.taskService.run(openId, -1, stageName);
 
       return {
         actions,
@@ -521,76 +496,6 @@ export class MessageService {
       }],
       success: true
     };
-  }
-
-
-  /**
-   * 处理卡片交互
-   * @param openId 用户的 open_id
-   * @param actionData 卡片交互数据
-   * @param feishuClient 飞书客户端实例
-   * @returns 处理结果
-   */
-  async handleCardAction(openId: string, actionData: any, feishuClient: any): Promise<{
-    success: boolean;
-    toast: {
-      type: 'success' | 'error';
-      content: string;
-      i18n: {
-        zh_cn: string;
-        en_us: string;
-      };
-    };
-  }> {
-    try {
-      logger.info(`用户 ${openId} 进行了卡片交互`, actionData);
-
-      // 处理计划更新
-      if (actionData?.value) {
-        const updateResult = await this.planService.updatePlan(openId, actionData.value, feishuClient);
-
-        // 发送文本消息给用户
-        await feishuClient.sendTextMessage(openId, updateResult.message);
-
-        return {
-          success: updateResult.success,
-          toast: {
-            type: updateResult.success ? 'success' : 'error',
-            content: updateResult.success ? "配置已更新" : "配置更新失败",
-            i18n: {
-              zh_cn: updateResult.success ? "配置已更新" : "配置更新失败",
-              en_us: updateResult.success ? "Configuration updated" : "Configuration update failed",
-            },
-          },
-        };
-      }
-
-      return {
-        success: true,
-        toast: {
-          type: 'success',
-          content: "操作完成",
-          i18n: {
-            zh_cn: "操作完成",
-            en_us: "Operation completed",
-          },
-        },
-      };
-
-    } catch (error) {
-      logger.error(`处理卡片交互失败: ${error}`);
-      return {
-        success: false,
-        toast: {
-          type: 'error',
-          content: "操作失败",
-          i18n: {
-            zh_cn: "操作失败",
-            en_us: "Operation failed",
-          },
-        },
-      };
-    }
   }
 
   /**

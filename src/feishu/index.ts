@@ -5,6 +5,7 @@ import { MessageService } from "../services/MessageService.js";
 import { MedicationService } from "../services/MedicationService.js";
 import { PlanService } from "../services/PlanService.js";
 import { TaskService } from "../services/TaskService.js";
+import { CardService } from "../services/CardService.js";
 import { logger } from "../utils/logger.js";
 import {
   MessageContext,
@@ -24,6 +25,7 @@ export class FeishuClient {
   larkWsClient: lark.WSClient;
   dataSource: DataSource;
   messageService: MessageService;
+  cardService: CardService;
 
   constructor({ dataSource }: { dataSource: DataSource }) {
     this.larkClient = new lark.Client({
@@ -42,8 +44,9 @@ export class FeishuClient {
     // 初始化业务服务
     const medicationService = new MedicationService(dataSource);
     const planService = new PlanService(dataSource);
-    const taskService = new TaskService(dataSource)
+    const taskService = new TaskService(dataSource);
     this.messageService = new MessageService(medicationService, planService, taskService);
+    this.cardService = new CardService(medicationService, planService);
 
     this.initWsEvent();
   }
@@ -210,9 +213,16 @@ export class FeishuClient {
       const { open_id } = operator;
 
       // 使用业务服务处理卡片交互
-      const result = await this.messageService.handleCardAction(open_id, action, this);
+      const result = await this.cardService.processCardAction(open_id, action)
 
-      return result;
+      if (result.actions.length > 0) {
+        await this.executeActions(result.actions);
+      }
+      
+      return {
+        success: result.success,
+        toast: result.toast
+      }
     } catch (error) {
       logger.error(`处理卡片交互失败: ${error}`);
       return {
@@ -248,6 +258,7 @@ export class FeishuClient {
     templateVersion: string,
     templateVariable?: Record<string, any>,
   ) {
+    logger.info(`发送卡片消息给 ${id}，卡片配置：${templateId}@${templateVersion}，卡片变量：${JSON.stringify(templateVariable)}`)
     return this.larkClient.im.message.create({
       params: {
         receive_id_type: "open_id",
