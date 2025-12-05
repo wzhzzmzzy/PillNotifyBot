@@ -4,6 +4,7 @@ import { registerScheduler, updateUserSchedule } from "./scheduler.js";
 import { MessageService } from "../services/MessageService.js";
 import { MedicationService } from "../services/MedicationService.js";
 import { PlanService } from "../services/PlanService.js";
+import { TaskService } from "../services/TaskService.js";
 import { logger } from "../utils/logger.js";
 import {
   MessageContext,
@@ -41,7 +42,8 @@ export class FeishuClient {
     // 初始化业务服务
     const medicationService = new MedicationService(dataSource);
     const planService = new PlanService(dataSource);
-    this.messageService = new MessageService(medicationService, planService);
+    const taskService = new TaskService(dataSource)
+    this.messageService = new MessageService(medicationService, planService, taskService);
 
     this.initWsEvent();
   }
