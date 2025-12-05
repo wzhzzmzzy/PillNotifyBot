@@ -139,6 +139,7 @@ export class DataSource {
   recordMedication(owner: string, stageId: number): number {
     const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
 
+    console.log('db:', owner, stageId)
     const stmt = this.db.prepare(`
       INSERT INTO medication_records (create_at, stage, owner)
       VALUES (?, ?, ?)

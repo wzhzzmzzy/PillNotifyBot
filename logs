@@ -52,3 +52,161 @@
 {"level":30,"time":1764733359165,"pid":10407,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
 {"level":30,"time":1764736166178,"pid":10915,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
 {"level":30,"time":1764736200514,"pid":10915,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764929899472,"pid":1762,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764929914765,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764929914765,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764929914766,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: 删除阶段晚上"}
+{"level":30,"time":1764929914766,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 请求删除阶段: 晚上"}
+{"level":30,"time":1764929914778,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 成功删除阶段: 晚上"}
+{"level":30,"time":1764929914778,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764929915391,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：update_schedule"}
+{"level":30,"time":1764929915392,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 没有活跃配置，已清除所有定时任务"}
+{"level":30,"time":1764929920443,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764929920443,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764929920443,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: 添加阶段晚上，提醒时间18:46"}
+{"level":30,"time":1764929920443,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 请求添加阶段: 晚上，时间: 18:46"}
+{"level":30,"time":1764929920450,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 成功添加阶段: 晚上"}
+{"level":30,"time":1764929920450,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764929920892,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：update_schedule"}
+{"level":30,"time":1764929920893,"pid":1762,"hostname":"VM-16-11-debian","msg":"为用户 ou_426244f5ff3533c487cdb3d07e2347ee 创建定时任务: 晚上 (18:46), cron: 46 18 * * *"}
+{"level":30,"time":1764929920936,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 的定时任务已创建，共 1 个任务"}
+{"level":30,"time":1764929920936,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 的定时任务已更新"}
+{"level":30,"time":1764929930891,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764929930891,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764929930891,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: [debug]发送通知，阶段晚上"}
+{"level":30,"time":1764929930892,"pid":1762,"hostname":"VM-16-11-debian","msg":"处理Debug通知命令 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上"}
+{"level":30,"time":1764929930892,"pid":1762,"hostname":"VM-16-11-debian","msg":"定时任务开始执行 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上 (ID: -1)"}
+{"level":30,"time":1764929930892,"pid":1762,"hostname":"VM-16-11-debian","msg":"定时任务结束 - 用户 ou_426244f5ff3533c487cdb3d07e2347ee 阶段 晚上: 已服用-中止发送"}
+{"level":30,"time":1764929966949,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764929966949,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764929966949,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: 添加阶段晚上1，提醒时间18:46"}
+{"level":30,"time":1764929966949,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 请求添加阶段: 晚上1，时间: 18:46"}
+{"level":30,"time":1764929966955,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 成功添加阶段: 晚上1"}
+{"level":30,"time":1764929966955,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764929967416,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：update_schedule"}
+{"level":30,"time":1764929967416,"pid":1762,"hostname":"VM-16-11-debian","msg":"已清除用户 ou_426244f5ff3533c487cdb3d07e2347ee 的所有定时任务"}
+{"level":30,"time":1764929967416,"pid":1762,"hostname":"VM-16-11-debian","msg":"为用户 ou_426244f5ff3533c487cdb3d07e2347ee 创建定时任务: 晚上 (18:46), cron: 46 18 * * *"}
+{"level":30,"time":1764929967417,"pid":1762,"hostname":"VM-16-11-debian","msg":"为用户 ou_426244f5ff3533c487cdb3d07e2347ee 创建定时任务: 晚上1 (18:46), cron: 46 18 * * *"}
+{"level":30,"time":1764929967417,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 的定时任务已创建，共 2 个任务"}
+{"level":30,"time":1764929967417,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 的定时任务已更新"}
+{"level":30,"time":1764929971815,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764929971816,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764929971816,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: [debug]发送通知，阶段晚上1"}
+{"level":30,"time":1764929971816,"pid":1762,"hostname":"VM-16-11-debian","msg":"处理Debug通知命令 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上1"}
+{"level":30,"time":1764929971816,"pid":1762,"hostname":"VM-16-11-debian","msg":"定时任务开始执行 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上1 (ID: -1)"}
+{"level":30,"time":1764929971819,"pid":1762,"hostname":"VM-16-11-debian","msg":"定时任务结束 - 用户 ou_426244f5ff3533c487cdb3d07e2347ee 阶段 晚上1: 未服用-发送消息"}
+{"level":30,"time":1764929971819,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764929971819,"pid":1762,"hostname":"VM-16-11-debian","msg":"发送卡片消息给 ou_426244f5ff3533c487cdb3d07e2347ee，卡片配置：AAqXfv48ZgpjT@1.0.5，卡片变量：{\"title\":\"准点报时来啦，晚上1记得吃药哦\",\"stageName\":\"晚上1\",\"stageId\":\"2\",\"status\":\"done\"}"}
+{"level":30,"time":1764929974908,"pid":1762,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764929974908,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"2\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764929974909,"pid":1762,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":50,"time":1764929974909,"pid":1762,"hostname":"VM-16-11-debian","msg":"记录用户 ou_426244f5ff3533c487cdb3d07e2347ee 服药失败: SQLiteError: NOT NULL constraint failed: medication_records.stage"}
+{"level":30,"time":1764929974909,"pid":1762,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764930054298,"pid":1762,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930055024,"pid":1762,"hostname":"VM-16-11-debian","msg":"已停止用户 ou_426244f5ff3533c487cdb3d07e2347ee 的所有定时任务"}
+{"level":30,"time":1764930055025,"pid":1762,"hostname":"VM-16-11-debian","msg":"所有定时任务已停止"}
+{"level":30,"time":1764930055025,"pid":1762,"hostname":"VM-16-11-debian","msg":"[Server] 清理完成，退出任务"}
+{"level":30,"time":1764930055883,"pid":1994,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930060909,"pid":1994,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764930060909,"pid":1994,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"2\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764930060910,"pid":1994,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":50,"time":1764930060911,"pid":1994,"hostname":"VM-16-11-debian","msg":"记录用户 ou_426244f5ff3533c487cdb3d07e2347ee 服药失败: SQLiteError: NOT NULL constraint failed: medication_records.stage"}
+{"level":30,"time":1764930060911,"pid":1994,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764930072232,"pid":1994,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930102149,"pid":1994,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930102845,"pid":1994,"hostname":"VM-16-11-debian","msg":"所有定时任务已停止"}
+{"level":30,"time":1764930102845,"pid":1994,"hostname":"VM-16-11-debian","msg":"[Server] 清理完成，退出任务"}
+{"level":30,"time":1764930103804,"pid":2124,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930105846,"pid":2124,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764930105847,"pid":2124,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"2\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764930105847,"pid":2124,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":50,"time":1764930105848,"pid":2124,"hostname":"VM-16-11-debian","msg":"记录用户 ou_426244f5ff3533c487cdb3d07e2347ee 服药失败: SQLiteError: NOT NULL constraint failed: medication_records.stage"}
+{"level":30,"time":1764930185018,"pid":2124,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930186182,"pid":2124,"hostname":"VM-16-11-debian","msg":"所有定时任务已停止"}
+{"level":30,"time":1764930186183,"pid":2124,"hostname":"VM-16-11-debian","msg":"[Server] 清理完成，退出任务"}
+{"level":30,"time":1764930186915,"pid":2222,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930191189,"pid":2222,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764930191189,"pid":2222,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764930191190,"pid":2222,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: [debug]发送通知，阶段晚上1"}
+{"level":30,"time":1764930191190,"pid":2222,"hostname":"VM-16-11-debian","msg":"处理Debug通知命令 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上1"}
+{"level":30,"time":1764930191191,"pid":2222,"hostname":"VM-16-11-debian","msg":"定时任务开始执行 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上1 (ID: -1)"}
+{"level":30,"time":1764930191191,"pid":2222,"hostname":"VM-16-11-debian","msg":"定时任务结束 - 用户 ou_426244f5ff3533c487cdb3d07e2347ee 阶段 晚上1: 已服用-中止发送"}
+{"level":30,"time":1764930242317,"pid":2222,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930245086,"pid":2222,"hostname":"VM-16-11-debian","msg":"所有定时任务已停止"}
+{"level":30,"time":1764930245086,"pid":2222,"hostname":"VM-16-11-debian","msg":"[Server] 清理完成，退出任务"}
+{"level":30,"time":1764930246007,"pid":2338,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930260350,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764930260351,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764930260351,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: [debug]发送通知，阶段晚上1"}
+{"level":30,"time":1764930260352,"pid":2338,"hostname":"VM-16-11-debian","msg":"处理Debug通知命令 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上1"}
+{"level":30,"time":1764930260352,"pid":2338,"hostname":"VM-16-11-debian","msg":"定时任务开始执行 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上1 (ID: -1)"}
+{"level":30,"time":1764930260352,"pid":2338,"hostname":"VM-16-11-debian","msg":"定时任务结束 - 用户 ou_426244f5ff3533c487cdb3d07e2347ee 阶段 晚上1: 已服用-中止发送"}
+{"level":30,"time":1764930271267,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764930271267,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764930271267,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: 添加阶段晚上2，提醒时间18:46"}
+{"level":30,"time":1764930271268,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 请求添加阶段: 晚上2，时间: 18:46"}
+{"level":30,"time":1764930271277,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 成功添加阶段: 晚上2"}
+{"level":30,"time":1764930271277,"pid":2338,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764930271866,"pid":2338,"hostname":"VM-16-11-debian","msg":"执行动作：update_schedule"}
+{"level":30,"time":1764930271866,"pid":2338,"hostname":"VM-16-11-debian","msg":"为用户 ou_426244f5ff3533c487cdb3d07e2347ee 创建定时任务: 晚上 (18:46), cron: 46 18 * * *"}
+{"level":30,"time":1764930271871,"pid":2338,"hostname":"VM-16-11-debian","msg":"为用户 ou_426244f5ff3533c487cdb3d07e2347ee 创建定时任务: 晚上1 (18:46), cron: 46 18 * * *"}
+{"level":30,"time":1764930271871,"pid":2338,"hostname":"VM-16-11-debian","msg":"为用户 ou_426244f5ff3533c487cdb3d07e2347ee 创建定时任务: 晚上2 (18:46), cron: 46 18 * * *"}
+{"level":30,"time":1764930271871,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 的定时任务已创建，共 3 个任务"}
+{"level":30,"time":1764930271871,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 的定时任务已更新"}
+{"level":30,"time":1764930275500,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764930275500,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764930275500,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: [debug]发送通知，阶段晚上2"}
+{"level":30,"time":1764930275500,"pid":2338,"hostname":"VM-16-11-debian","msg":"处理Debug通知命令 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上2"}
+{"level":30,"time":1764930275500,"pid":2338,"hostname":"VM-16-11-debian","msg":"定时任务开始执行 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上2 (ID: -1)"}
+{"level":30,"time":1764930275501,"pid":2338,"hostname":"VM-16-11-debian","msg":"定时任务结束 - 用户 ou_426244f5ff3533c487cdb3d07e2347ee 阶段 晚上2: 未服用-发送消息"}
+{"level":30,"time":1764930275501,"pid":2338,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764930275501,"pid":2338,"hostname":"VM-16-11-debian","msg":"发送卡片消息给 ou_426244f5ff3533c487cdb3d07e2347ee，卡片配置：AAqXfv48ZgpjT@1.0.5，卡片变量：{\"title\":\"准点报时来啦，晚上2记得吃药哦\",\"stageName\":\"晚上2\",\"stageId\":\"3\",\"status\":\"done\"}"}
+{"level":30,"time":1764930281220,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764930281221,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"3\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764930281221,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":50,"time":1764930281221,"pid":2338,"hostname":"VM-16-11-debian","msg":"记录用户 ou_426244f5ff3533c487cdb3d07e2347ee 服药失败: SQLiteError: NOT NULL constraint failed: medication_records.stage"}
+{"level":30,"time":1764930291050,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到新消息"}
+{"level":30,"time":1764930291050,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到用户 ou_426244f5ff3533c487cdb3d07e2347ee 的消息"}
+{"level":30,"time":1764930291050,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 发送文本消息: [debug]发送通知，阶段晚上2"}
+{"level":30,"time":1764930291051,"pid":2338,"hostname":"VM-16-11-debian","msg":"处理Debug通知命令 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上2"}
+{"level":30,"time":1764930291051,"pid":2338,"hostname":"VM-16-11-debian","msg":"定时任务开始执行 - 用户: ou_426244f5ff3533c487cdb3d07e2347ee, 阶段: 晚上2 (ID: -1)"}
+{"level":30,"time":1764930291051,"pid":2338,"hostname":"VM-16-11-debian","msg":"定时任务结束 - 用户 ou_426244f5ff3533c487cdb3d07e2347ee 阶段 晚上2: 未服用-发送消息"}
+{"level":30,"time":1764930291051,"pid":2338,"hostname":"VM-16-11-debian","msg":"执行动作：send_message"}
+{"level":30,"time":1764930291051,"pid":2338,"hostname":"VM-16-11-debian","msg":"发送卡片消息给 ou_426244f5ff3533c487cdb3d07e2347ee，卡片配置：AAqXfv48ZgpjT@1.0.5，卡片变量：{\"title\":\"准点报时来啦，晚上2记得吃药哦\",\"stageName\":\"晚上2\",\"stageId\":\"3\",\"status\":\"done\"}"}
+{"level":30,"time":1764930294747,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764930294747,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"3\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764930294747,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":50,"time":1764930294747,"pid":2338,"hostname":"VM-16-11-debian","msg":"记录用户 ou_426244f5ff3533c487cdb3d07e2347ee 服药失败: SQLiteError: NOT NULL constraint failed: medication_records.stage"}
+{"level":30,"time":1764930298603,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764930298603,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"3\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764930298604,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":50,"time":1764930298604,"pid":2338,"hostname":"VM-16-11-debian","msg":"记录用户 ou_426244f5ff3533c487cdb3d07e2347ee 服药失败: SQLiteError: NOT NULL constraint failed: medication_records.stage"}
+{"level":30,"time":1764930304234,"pid":2338,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764930304234,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"3\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764930304234,"pid":2338,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":50,"time":1764930304234,"pid":2338,"hostname":"VM-16-11-debian","msg":"记录用户 ou_426244f5ff3533c487cdb3d07e2347ee 服药失败: SQLiteError: NOT NULL constraint failed: medication_records.stage"}
+{"level":30,"time":1764930326011,"pid":2338,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930327753,"pid":2338,"hostname":"VM-16-11-debian","msg":"已停止用户 ou_426244f5ff3533c487cdb3d07e2347ee 的所有定时任务"}
+{"level":30,"time":1764930327753,"pid":2338,"hostname":"VM-16-11-debian","msg":"所有定时任务已停止"}
+{"level":30,"time":1764930327753,"pid":2338,"hostname":"VM-16-11-debian","msg":"[Server] 清理完成，退出任务"}
+{"level":30,"time":1764930328519,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930330952,"pid":2576,"hostname":"VM-16-11-debian","msg":"收到卡片交互事件"}
+{"level":30,"time":1764930330953,"pid":2576,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 进行了卡片交互 {\"value\":{\"action\":\"done\",\"stageId\":\"3\"},\"tag\":\"button\"}"}
+{"level":30,"time":1764930330953,"pid":2576,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 触发卡片记录：已服用"}
+{"level":30,"time":1764930330961,"pid":2576,"hostname":"VM-16-11-debian","msg":"用户 ou_426244f5ff3533c487cdb3d07e2347ee 确认了阶段3的服药"}
+{"level":30,"time":1764930363375,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930372115,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930411467,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930419232,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930429079,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930440756,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930537885,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930567080,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930577322,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930582810,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930614411,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930669134,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930679654,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764930716651,"pid":2576,"hostname":"VM-16-11-debian","msg":"Starting server on 0.0.0.0:12450"}
+{"level":30,"time":1764931067883,"pid":2576,"hostname":"VM-16-11-debian","msg":"所有定时任务已停止"}
+{"level":30,"time":1764931067883,"pid":2576,"hostname":"VM-16-11-debian","msg":"[Server] 清理完成，退出任务"}

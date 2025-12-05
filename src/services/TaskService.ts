@@ -5,6 +5,7 @@ import {
   StateActionType,
   MessageType
 } from '../types/MessageState.js';
+import { PillNotifyCard } from '../const/card.js';
 
 /**
  * 定时任务业务逻辑服务
@@ -52,9 +53,10 @@ export class TaskService {
 
         if (!existingPendingRecord) {
           // 如果不存在记录，创建一个"未服用"的记录
-          this.dataSource.createPendingMedicationRecord(openId, stageId);
+          // this.dataSource.createPendingMedicationRecord(openId, stageId);
         }
-
+        
+        console.log('sending', stageName, stageId)
         // 创建发送提醒消息的 Action
         const sendMessageAction: MessageStateAction = {
           type: StateActionType.SEND_MESSAGE,
@@ -62,14 +64,10 @@ export class TaskService {
             openId,
             message: {
               type: MessageType.CARD,
-              content: {
-                templateId: "AAqXfv48ZgpjT",
-                templateVersion: "1.0.5",
-                templateVariable: {
-                    title: `准点报时来啦，${stageName}记得吃药哦`,
-                    stageId
-                }
-              }
+              content: PillNotifyCard(stageName, {
+                stageId: String(stageId),
+                okBtnText: '吃好了点这里',
+              }) 
             }
           }
         };

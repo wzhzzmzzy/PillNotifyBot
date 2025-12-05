@@ -221,7 +221,8 @@ export class FeishuClient {
       
       return {
         success: result.success,
-        toast: result.toast
+        toast: result.toast,
+        card: result.card
       }
     } catch (error) {
       logger.error(`处理卡片交互失败: ${error}`);
