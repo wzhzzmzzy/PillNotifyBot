@@ -272,22 +272,4 @@ export class PlanService {
       };
     }
   }
-
-
-  /**
-   * 生成计划配置的模板数据
-   * @param openId 用户的 open_id
-   * @returns 用于卡片模板的数据
-   */
-  generateTemplateData(openId: string): Record<string, any> {
-    const currentPlan = this.getActivePlan(openId);
-
-    // 这里可以根据当前计划生成更丰富的模板数据
-    // 目前使用简单的示例数据
-    return {
-      "Input": currentPlan && currentPlan.length > 0
-        ? `当前有 ${currentPlan.length} 个服药提醒`
-        : "Hello?"
-    };
-  }
 }

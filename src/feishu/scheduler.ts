@@ -90,8 +90,14 @@ export class MedicationScheduler {
               payload: {
                 openId,
                 message: {
-                  type: MessageType.TEXT,
-                  content: `⏰ ${name} 服药提醒时间到了，请记得服药！`
+                  type: MessageType.CARD,
+                  content: {
+                    templateId: "AAqXfv48ZgpjT",
+                    templateVersion: "1.0.2",
+                    templateVariable: {
+                      title: `准点报时来了，现在是${time}，${name}记得吃药哦~`
+                    }
+                  }
                 }
               }
             };

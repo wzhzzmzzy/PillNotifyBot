@@ -133,20 +133,14 @@ export class MessageService {
    * 创建修改计划结果
    */
   private createModifyPlanResult(openId: string): MessageProcessResult {
-    const templateData = this.planService.generateTemplateData(openId);
-
     return {
       actions: [{
         type: StateActionType.SEND_MESSAGE,
         payload: {
           openId,
           message: {
-            type: MessageType.CARD,
-            content: {
-              templateId: "AAqXfv48ZgpjT",
-              templateVersion: "1.0.0",
-              templateVariable: templateData
-            }
+            type: MessageType.TEXT,
+            content: "可以告诉我“添加阶段<阶段名称>，提醒时间<hh:mm>”，或者“删除阶段<阶段名称>”，或者“列出阶段”和“现在有哪些阶段”"
           }
         }
       }],
