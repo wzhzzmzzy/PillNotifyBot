@@ -1,15 +1,20 @@
 import { Cron } from 'croner';
 import { DataSource, MedicationPlan } from '../db/index.js';
 import { logger } from '../utils/logger.js';
+import {
+  MessageStateAction,
+  StateActionType,
+  MessageType
+} from '../types/MessageState.js';
 
 // 定时任务管理器，用于管理每个用户的服药提醒任务
-class MedicationScheduler {
+export class MedicationScheduler {
   private static instance: MedicationScheduler;
   private jobs: Map<string, Cron[]> = new Map(); // key: openId, value: 该用户的所有定时任务
   private dataSource?: DataSource;
   private feishuClient?: any; // 将在 registerScheduler 中设置
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance(): MedicationScheduler {
     if (!MedicationScheduler.instance) {
@@ -80,7 +85,17 @@ class MedicationScheduler {
             }
 
             // 发送提醒消息
-            await this.feishuClient.sendTextMessage(openId, `⏰ ${name} 服药提醒时间到了，请记得服药！`);
+            const sendMessageAction: MessageStateAction = {
+              type: StateActionType.SEND_MESSAGE,
+              payload: {
+                openId,
+                message: {
+                  type: MessageType.TEXT,
+                  content: `⏰ ${name} 服药提醒时间到了，请记得服药！`
+                }
+              }
+            };
+            await this.feishuClient.executeActions([sendMessageAction]);
 
             logger.info(`定时任务结束 - 用户 ${openId} 阶段 ${name}: 未服用-发送消息`);
           } else {

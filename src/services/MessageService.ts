@@ -32,27 +32,73 @@ export class MessageService {
     logger.info(`用户 ${openId} 发送文本消息: ${text}`);
 
     try {
-      // 处理"修改计划"消息
-      if (text === "修改计划") {
+      const trimmedText = text.trim();
+
+      // ============ 消息模式匹配统一管理 ============
+
+      // 1. 修改计划消息
+      if (trimmedText === "修改计划") {
         return this.createModifyPlanResult(openId);
       }
 
-      // 处理计划配置命令
-      const planCommandResult = await this.processPlanCommand(openId, text);
-      if (planCommandResult) {
-        return planCommandResult;
+      // 2. 计划管理命令
+      if (trimmedText === "清空配置" || trimmedText === "初始化配置") {
+        return await this.handleClearConfiguration(openId);
       }
 
-      // 处理服药确认消息
-      const medicationResult = await this.processMedicationConfirmation(openId, text);
-      if (medicationResult) {
-        return medicationResult;
+      // 3. 添加阶段命令：支持两种格式
+      const addStageMatchHour = trimmedText.match(/^添加阶段(.+?)，提醒时间(\d{1,2})点$/);
+      if (addStageMatchHour) {
+        const stageName = addStageMatchHour[1].trim();
+        const hour = parseInt(addStageMatchHour[2]);
+        return await this.handleAddStage(openId, stageName, hour, 0);
       }
 
-      // 处理历史记录查询
-      const historyResult = await this.processHistoryQuery(openId, text);
-      if (historyResult) {
-        return historyResult;
+      const addStageMatchTime = trimmedText.match(/^添加阶段(.+?)，提醒时间(\d{1,2}):(\d{1,2})$/);
+      if (addStageMatchTime) {
+        const stageName = addStageMatchTime[1].trim();
+        const hour = parseInt(addStageMatchTime[2]);
+        const minute = parseInt(addStageMatchTime[3]);
+        return await this.handleAddStage(openId, stageName, hour, minute);
+      }
+
+      // 4. 删除阶段命令
+      const deleteStageMatch = trimmedText.match(/^删除阶段(.+)$/);
+      if (deleteStageMatch) {
+        const stageName = deleteStageMatch[1].trim();
+        return await this.handleDeleteStage(openId, stageName);
+      }
+
+      // 5. 服药确认消息：统一模式匹配
+      const medicationMatch = trimmedText.match(/^(.+?)吃了$/);
+      if (medicationMatch) {
+        const stageName = medicationMatch[1].trim();
+        if (stageName.length > 0) {
+          return await this.handleMedicationConfirmation(openId, stageName);
+        }
+      }
+
+      // 6. 历史记录查询：相对日期
+      if (trimmedText === "今天" || trimmedText === "昨天" || trimmedText === "前天") {
+        return await this.handleHistoryQuery(openId, trimmedText);
+      }
+
+      // 7. 历史记录查询：具体日期格式 YYYY-MM-DD 或 YYYY/MM/DD
+      const datePattern = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/;
+      const dateMatch = trimmedText.match(datePattern);
+      if (dateMatch) {
+        const year = parseInt(dateMatch[1]);
+        const month = parseInt(dateMatch[2]);
+        const day = parseInt(dateMatch[3]);
+
+        // 验证日期有效性
+        const inputDate = new Date(year, month - 1, day);
+        if (inputDate.getFullYear() === year &&
+            inputDate.getMonth() === month - 1 &&
+            inputDate.getDate() === day) {
+          const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+          return await this.handleHistoryQuery(openId, formattedDate, formattedDate);
+        }
       }
 
       // 未知消息类型
@@ -109,61 +155,29 @@ export class MessageService {
   }
 
   /**
-   * 处理计划配置命令
+   * 处理清空配置命令
    */
-  private async processPlanCommand(openId: string, text: string): Promise<MessageProcessResult | null> {
-    const trimmedText = text.trim();
-
-    // 清空配置或初始化配置
-    if (trimmedText === "清空配置" || trimmedText === "初始化配置") {
-      const result = await this.planService.clearUserConfiguration(openId);
-      return {
-        actions: [{
-          type: StateActionType.SEND_MESSAGE,
-          payload: {
-            openId,
-            message: {
-              type: MessageType.TEXT,
-              content: result.message
-            }
+  private async handleClearConfiguration(openId: string): Promise<MessageProcessResult> {
+    const result = await this.planService.clearUserConfiguration(openId);
+    return {
+      actions: [{
+        type: StateActionType.SEND_MESSAGE,
+        payload: {
+          openId,
+          message: {
+            type: MessageType.TEXT,
+            content: result.message
           }
-        }],
-        success: result.success
-      };
-    }
-
-    // 添加阶段命令：支持两种格式
-    const addStageMatchHour = trimmedText.match(/^添加阶段(.+?)，提醒时间(\d{1,2})点$/);
-    const addStageMatchTime = trimmedText.match(/^添加阶段(.+?)，提醒时间(\d{1,2}):(\d{1,2})$/);
-
-    if (addStageMatchHour) {
-      const stageName = addStageMatchHour[1].trim();
-      const hour = parseInt(addStageMatchHour[2]);
-      const minute = 0;
-      return await this.createAddStageResult(openId, stageName, hour, minute);
-    }
-
-    if (addStageMatchTime) {
-      const stageName = addStageMatchTime[1].trim();
-      const hour = parseInt(addStageMatchTime[2]);
-      const minute = parseInt(addStageMatchTime[3]);
-      return await this.createAddStageResult(openId, stageName, hour, minute);
-    }
-
-    // 删除阶段命令
-    const deleteStageMatch = trimmedText.match(/^删除阶段(.+)$/);
-    if (deleteStageMatch) {
-      const stageName = deleteStageMatch[1].trim();
-      return await this.createDeleteStageResult(openId, stageName);
-    }
-
-    return null;
+        }
+      }],
+      success: result.success
+    };
   }
 
   /**
-   * 创建添加阶段结果
+   * 处理添加阶段命令
    */
-  private async createAddStageResult(openId: string, stageName: string, hour: number, minute: number): Promise<MessageProcessResult> {
+  private async handleAddStage(openId: string, stageName: string, hour: number, minute: number): Promise<MessageProcessResult> {
     const result = await this.planService.addStage(openId, stageName, hour, minute);
 
     const actions: MessageStateAction[] = [
@@ -197,9 +211,9 @@ export class MessageService {
   }
 
   /**
-   * 创建删除阶段结果
+   * 处理删除阶段命令
    */
-  private async createDeleteStageResult(openId: string, stageName: string): Promise<MessageProcessResult> {
+  private async handleDeleteStage(openId: string, stageName: string): Promise<MessageProcessResult> {
     const result = await this.planService.deleteStage(openId, stageName);
 
     const actions: MessageStateAction[] = [
@@ -235,14 +249,7 @@ export class MessageService {
   /**
    * 处理服药确认消息
    */
-  private async processMedicationConfirmation(openId: string, text: string): Promise<MessageProcessResult | null> {
-    const medicationResult = this.medicationService.parseMedicationConfirmation(text);
-    if (!medicationResult) {
-      return null;
-    }
-
-    const { stageName } = medicationResult;
-
+  private async handleMedicationConfirmation(openId: string, stageName: string): Promise<MessageProcessResult> {
     // 获取用户的当前活跃计划
     const currentPlan = this.planService.getActivePlan(openId);
     if (!currentPlan || currentPlan.length === 0) {
@@ -306,14 +313,32 @@ export class MessageService {
   /**
    * 处理历史记录查询
    */
-  private async processHistoryQuery(openId: string, text: string): Promise<MessageProcessResult | null> {
-    const parsedDate = this.parseDateQuery(text);
-    if (!parsedDate) {
-      return null;
+  private async handleHistoryQuery(openId: string, queryText: string, displayName?: string): Promise<MessageProcessResult> {
+    // 计算日期
+    let date: string;
+    let actualDisplayName: string;
+
+    if (queryText === "今天") {
+      const today = new Date();
+      date = today.toISOString().split('T')[0];
+      actualDisplayName = "今天";
+    } else if (queryText === "昨天") {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      date = yesterday.toISOString().split('T')[0];
+      actualDisplayName = "昨天";
+    } else if (queryText === "前天") {
+      const dayBeforeYesterday = new Date();
+      dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+      date = dayBeforeYesterday.toISOString().split('T')[0];
+      actualDisplayName = "前天";
+    } else {
+      // 具体日期格式
+      date = queryText;
+      actualDisplayName = displayName || queryText;
     }
 
-    const { date, displayName } = parsedDate;
-    const formattedRecords = this.medicationService.formatMedicationRecords(openId, date, displayName);
+    const formattedRecords = this.medicationService.formatMedicationRecords(openId, date, actualDisplayName);
 
     return {
       actions: [{
@@ -330,58 +355,6 @@ export class MessageService {
     };
   }
 
-  /**
-   * 解析日期查询文本
-   * @param text 用户输入的文本
-   * @returns 解析结果，包含日期和显示名称，如果不匹配则返回null
-   */
-  private parseDateQuery(text: string): { date: string; displayName: string } | null {
-    const trimmedText = text.trim();
-
-    // 处理相对日期
-    const today = new Date();
-
-    if (trimmedText === "今天") {
-      const date = today.toISOString().split('T')[0];
-      return { date, displayName: "今天" };
-    }
-
-    if (trimmedText === "昨天") {
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
-      const date = yesterday.toISOString().split('T')[0];
-      return { date, displayName: "昨天" };
-    }
-
-    if (trimmedText === "前天") {
-      const dayBeforeYesterday = new Date(today);
-      dayBeforeYesterday.setDate(today.getDate() - 2);
-      const date = dayBeforeYesterday.toISOString().split('T')[0];
-      return { date, displayName: "前天" };
-    }
-
-    // 处理具体日期格式 YYYY-MM-DD 或 YYYY/MM/DD
-    const datePattern = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/;
-    const match = trimmedText.match(datePattern);
-
-    if (match) {
-      const year = parseInt(match[1]);
-      const month = parseInt(match[2]);
-      const day = parseInt(match[3]);
-
-      // 验证日期有效性
-      const inputDate = new Date(year, month - 1, day);
-      if (inputDate.getFullYear() === year &&
-          inputDate.getMonth() === month - 1 &&
-          inputDate.getDate() === day) {
-
-        const date = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        return { date, displayName: date };
-      }
-    }
-
-    return null;
-  }
 
   /**
    * 处理卡片交互

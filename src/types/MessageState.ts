@@ -5,7 +5,8 @@
 // 消息类型枚举
 export enum MessageType {
   TEXT = 'text',
-  CARD = 'card'
+  CARD = 'card',
+  JSON_CARD = 'json_card'
 }
 
 // 基础消息接口

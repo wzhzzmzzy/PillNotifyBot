@@ -81,15 +81,7 @@ export class DataSource {
    */
   getTodayMedicationRecords(owner: string): MedicationRecord[] {
     const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
-
-    const stmt = this.db.prepare(`
-      SELECT *
-      FROM medication_records
-      WHERE owner = ? AND create_at = ?
-      ORDER BY medication_time ASC
-    `);
-
-    return stmt.all(owner, today) as MedicationRecord[];
+    return this.getMedicationRecordsByDate(owner, today);
   }
 
   /**
@@ -173,6 +165,23 @@ export class DataSource {
 
     const result = stmt.run(today, stageId, owner, pendingTime.toISOString());
     return result.lastInsertRowid as number;
+  }
+
+  /**
+   * 获取用户指定日期的服药记录
+   * @param owner 用户的 open_id
+   * @param date 日期字符串，格式: YYYY-MM-DD
+   * @returns 返回用户指定日期的所有服药记录
+   */
+  getMedicationRecordsByDate(owner: string, date: string): MedicationRecord[] {
+    const stmt = this.db.prepare(`
+      SELECT *
+      FROM medication_records
+      WHERE owner = ? AND create_at = ?
+      ORDER BY medication_time ASC
+    `);
+
+    return stmt.all(owner, date) as MedicationRecord[];
   }
 
   /**

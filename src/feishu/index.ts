@@ -51,11 +51,11 @@ export class FeishuClient {
       // 处理「接收消息」事件，事件类型为 im.message.receive_v1
       eventDispatcher: new lark.EventDispatcher({}).register({
         "card.action.trigger": (data: any) => {
-          logger.info("收到卡片交互事件", data);
+          logger.info("收到卡片交互事件");
           return this.handleCardAction(data);
         },
         "im.message.receive_v1": (data) => {
-          logger.info(data);
+          logger.info("收到新消息");
           return this.onMessage(data);
         },
 
@@ -64,16 +64,23 @@ export class FeishuClient {
             user: { open_id, name },
           } = data;
 
+          logger.info("新用户初始化")
           // 使用业务服务处理新用户
           this.messageService.handleNewChat(open_id, name);
 
           return registerScheduler(open_id);
         },
+
+        "im.chat.access_event.bot_p2p_chat_entered_v1": () => {
+          logger.info("用户进入会话")
+
+          return;
+        }
       }),
     });
   }
 
-  close() {}
+  close() { }
 
   async onMessage(message: Message) {
     const { sender, message: messageData } = message;
@@ -111,7 +118,7 @@ export class FeishuClient {
       const result = await this.messageService.processMessage(context);
 
       // 根据状态机执行相应的动作
-      await this.executeActions(result.actions, open_id);
+      await this.executeActions(result.actions);
 
     } catch (error) {
       logger.error(`处理消息失败: ${error}`);
@@ -121,10 +128,10 @@ export class FeishuClient {
   /**
    * 执行状态机动作
    */
-  private async executeActions(actions: MessageStateAction[], contextOpenId: string): Promise<void> {
+  public async executeActions(actions: MessageStateAction[]): Promise<void> {
     for (const action of actions) {
       try {
-        await this.executeAction(action, contextOpenId);
+        await this.executeAction(action);
       } catch (error) {
         logger.error(`执行动作失败: ${error}`);
       }
@@ -134,7 +141,8 @@ export class FeishuClient {
   /**
    * 执行单个动作
    */
-  private async executeAction(action: MessageStateAction, contextOpenId: string): Promise<void> {
+  private async executeAction(action: MessageStateAction): Promise<void> {
+    logger.info(`执行动作：${action.type}`)
     switch (action.type) {
       case StateActionType.SEND_MESSAGE:
         await this.handleSendMessage(action.payload.openId, action.payload.message);
@@ -170,6 +178,11 @@ export class FeishuClient {
           templateVersion,
           templateVariable
         );
+        break;
+
+      case MessageType.JSON_CARD:
+        const { json } = message.content;
+        await this.sendCardMessageByJSON(openId, json)
         break;
 
       default:
@@ -214,7 +227,20 @@ export class FeishuClient {
     }
   }
 
-  sendCardMessageByTemplateId(
+  private sendCardMessageByJSON(id: string, json: string) {
+    return this.larkClient.im.message.create({
+      params: {
+        receive_id_type: 'open_id',
+      },
+      data: {
+        receive_id: id,
+        msg_type: 'interactive',
+        content: json
+      }
+    })
+  }
+
+  private sendCardMessageByTemplateId(
     id: string,
     templateId: string,
     templateVersion: string,
@@ -239,7 +265,7 @@ export class FeishuClient {
     });
   }
 
-  sendTextMessage(id: string, text: string) {
+  private sendTextMessage(id: string, text: string) {
     return this.larkClient.im.v1.message.create({
       params: {
         receive_id_type: "open_id",
