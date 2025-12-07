@@ -6,3 +6,5 @@ export const logger = pino(
     import.meta.env.APP_ENV === "dev" ? "./logs" : "/var/log/pill",
   ),
 );
+
+export const larkLogger = {};

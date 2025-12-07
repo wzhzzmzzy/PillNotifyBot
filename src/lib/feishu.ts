@@ -13,11 +13,14 @@ export class FeishuClient {
       appId: import.meta.env.APP_ID as string,
       appSecret: import.meta.env.APP_SECRET as string,
       appType: lark.AppType.SelfBuild,
+      loggerLevel: lark.LoggerLevel.debug,
+      logger,
     });
     this.larkWsClient = new lark.WSClient({
       appId: import.meta.env.APP_ID as string,
       appSecret: import.meta.env.APP_SECRET as string,
-      loggerLevel: lark.LoggerLevel.info,
+      loggerLevel: lark.LoggerLevel.debug,
+      logger,
     });
 
     this.initWsEvent();
