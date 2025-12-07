@@ -4,10 +4,10 @@ import { logger } from "../utils/logger.js";
 
 // 服药配置的接口定义
 export interface MedicationStageConfig {
-  id: number; // ID（必填，数字）
+  id: number;
   name: string; // 子配置名（字符串）
   time: string; // 每天的通知时间（HH:mm）
-  repeatInterval: number; // 重复通知间隔（分钟数，为0则不重复通知）
+  interval: number; // 重复通知间隔（分钟数，为0则不重复通知）
 }
 
 export type MedicationPlan = MedicationStageConfig[];
@@ -87,11 +87,13 @@ export class DataSource {
   /**
    * 获取用户今天已完成的服药阶段
    * @param owner 用户的 open_id
-   * @returns 返回今天已完成的服药阶段 ID 数组
+   * @returns 返回今天已完成的服药阶段计划数组
    */
-  getTodayCompletedStages(owner: string): number[] {
+  getTodayCompletedStages(owner: string) {
     const records = this.getTodayMedicationRecords(owner);
-    return records.map((record) => record.stage);
+    const plans = this.getActiveMedicationPlan(owner) ?? [];
+
+    return records.map((record) => plans.find((i) => i.id === record.stage));
   }
 
   /**
@@ -102,7 +104,7 @@ export class DataSource {
    */
   isStageCompletedToday(owner: string, stageId: number): boolean {
     const completedStages = this.getTodayCompletedStages(owner);
-    return completedStages.includes(stageId);
+    return completedStages.some((i) => i?.id === stageId);
   }
 
   /**
@@ -111,7 +113,10 @@ export class DataSource {
    * @param medicationPlan 服药计划配置
    * @returns 创建的配置记录 ID
    */
-  createOrUpdateMedicationPlan(owner: string, medicationPlan: MedicationPlan): number {
+  createOrUpdateMedicationPlan(
+    owner: string,
+    medicationPlan: MedicationPlan,
+  ): number {
     // 先将之前的配置设置为非活跃状态
     const deactivateStmt = this.db.prepare(`
       UPDATE medication_stage_config
@@ -139,7 +144,7 @@ export class DataSource {
   recordMedication(owner: string, stageId: number): number {
     const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
 
-    console.log('db:', owner, stageId)
+    console.log("db:", owner, stageId);
     const stmt = this.db.prepare(`
       INSERT INTO medication_records (create_at, stage, owner)
       VALUES (?, ?, ?)

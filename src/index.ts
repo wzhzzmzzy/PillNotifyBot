@@ -1,16 +1,10 @@
-import { DataSource } from "./db/index.js";
-import { FeishuClient } from "./feishu/index.js";
-import { getSchedulerInstance } from "./feishu/scheduler.js";
+import { FeishuClient } from "./lib/feishu.js";
 import { logger } from "./utils/logger.js";
 import { onProcessTerm } from "./utils/process.js";
 
-const dataSource = new DataSource();
-const feishuClient = new FeishuClient({
-  dataSource,
-});
-const scheduler = getSchedulerInstance()
+const feishu = new FeishuClient();
 
-logger.info('Starting server on 0.0.0.0:12450')
+logger.info("Starting server on 0.0.0.0:12450");
 const server = Bun.serve({
   port: 12450,
   hostname: "0.0.0.0",
@@ -20,8 +14,5 @@ const server = Bun.serve({
 });
 
 onProcessTerm({
-  dataSource,
   server,
-  feishuClient,
-  scheduler
 });

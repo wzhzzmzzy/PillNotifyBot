@@ -9,6 +9,7 @@
     "@larksuiteoapi/node-sdk": "^1.55.0",
     "await-to-js": "^3.0.0",
     "croner": "^9.1.0",
+    "mitt": "^3.0.1",
     "pino": "^10.1.0"
   },
   "devDependencies": {
