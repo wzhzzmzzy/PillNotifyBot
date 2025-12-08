@@ -74,6 +74,25 @@ export class DataSource {
     }
   }
 
+  allActiveMedicationPlan(): Array<{ owner: string; plan: MedicationPlan }> {
+    const stmt = this.db.prepare(`
+      SELECT stage_config, owner
+      FROM medication_stage_config
+      WHERE is_active = 1
+      ORDER BY created_at DESC
+      LIMIT 1
+    `);
+
+    const result = stmt.all() as { owner: string; stage_config: string }[];
+
+    return result.map((i) => {
+      return {
+        owner: i.owner,
+        plan: JSON.parse(i.stage_config),
+      };
+    });
+  }
+
   /**
    * 查询某一用户今天的服药记录
    * @param owner 用户的 open_id

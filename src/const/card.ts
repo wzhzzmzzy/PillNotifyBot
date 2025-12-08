@@ -20,8 +20,8 @@ export const PillNotifyCard = (params?: { title: string }) => ({
 type PillPlanAdditionCardVariable = {
   event: MenuActions;
   title: string;
-  name?: string;
-  time?: string;
+  rawName?: string;
+  rawTime?: string;
   save?: boolean;
 };
 
@@ -29,7 +29,7 @@ export const PillPlanAdditionCard = (
   params?: PillPlanAdditionCardVariable,
 ) => ({
   templateId: "AAqXibjpaXkjl",
-  templateVersion: "1.0.6",
+  templateVersion: "1.0.9",
   templateVariable: params,
 });
 
@@ -80,8 +80,8 @@ export const CardContent = (
             cardName === MenuActions.PlanAddition
               ? "添加提醒计划"
               : "修改提醒计划：" + params.name,
-          // name: params.name,
-          // time: params.time,
+          rawName: params.name,
+          rawTime: params.time,
           save: params.save,
         }),
       ),

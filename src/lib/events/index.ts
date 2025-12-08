@@ -3,10 +3,10 @@ import {
   CardMessage,
   CardToast,
   PlainText,
-} from "../const/card.js";
-import { MenuActions } from "../const/menu.js";
-import { DataSource } from "../db/index.js";
-import { CardResponse } from "../types/CardState.js";
+} from "../../const/card.js";
+import { MenuActions } from "../../const/menu.js";
+import { DataSource } from "../../db/index.js";
+import { CardResponse } from "../../types/CardState.js";
 import {
   FeishuEvent,
   MenuEvent,
@@ -15,9 +15,11 @@ import {
   EventPayload,
   CardAction,
   CardEvent,
-} from "../types/Feishu.js";
-import { logger } from "../utils/logger.js";
-import { FeishuClient } from "./feishu.js";
+  CronEvent,
+} from "../../types/Feishu.js";
+import { logger } from "../../utils/logger.js";
+import { FeishuClient } from "../feishu.js";
+import { Scheduler } from "../scheduler.js";
 
 type BotEventMap = {
   [K in BotEvent["key"]]: Extract<BotEvent, { key: K }>["value"];
@@ -30,13 +32,95 @@ type MenuEventMap = {
 export class EventHandler {
   feishu: FeishuClient;
   db: DataSource;
+  cron: Scheduler;
 
   constructor({ feishu }: { feishu: FeishuClient }) {
     this.feishu = feishu;
     this.db = new DataSource();
+    this.cron = new Scheduler();
+
+    this.cron.on(() => {
+      this.handler({
+        type: "Cron",
+        key: "notify",
+      });
+    });
+  }
+
+  stop() {
+    this.db.term();
+  }
+
+  cronHandler(event: CronEvent) {
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    const minuteOfDay = hour * 60 + minute;
+
+    const plans = this.db.allActiveMedicationPlan();
+
+    plans.forEach(({ owner, plan }) => {
+      const planMinuteOfDayList = plan
+        .map((i) => {
+          const [hour, minute] = i.time.split(":");
+          return {
+            ...i,
+            minuteOfDay: Number(hour) * 60 + Number(minute),
+          };
+        })
+        .sort((a, b) => a.minuteOfDay - b.minuteOfDay);
+
+      const hitTime: typeof planMinuteOfDayList = [];
+      planMinuteOfDayList.forEach((i, j) => {
+        let minuteOfDay = i.minuteOfDay;
+        const loopTillFirst = j + 1 >= planMinuteOfDayList.length;
+        while (
+          minuteOfDay <
+          (loopTillFirst
+            ? planMinuteOfDayList[0].minuteOfDay + 24 * 60
+            : planMinuteOfDayList[j + 1].minuteOfDay)
+        ) {
+          hitTime.push({
+            ...i,
+            minuteOfDay:
+              minuteOfDay > 24 * 60 ? minuteOfDay - 24 * 60 : minuteOfDay,
+          });
+          minuteOfDay += i.interval;
+        }
+      });
+      logger.info(
+        "计划触发事件 %s",
+        hitTime.map((i) => i.minuteOfDay).join(","),
+      );
+
+      const hitPlan = hitTime.find((m) => m.minuteOfDay === minuteOfDay);
+      if (!hitPlan) {
+        return;
+      }
+
+      logger.info("定时任务命中用户 %s 计划 %o", owner, hitPlan);
+      const completed = this.db
+        .getTodayCompletedStages(owner)
+        .some((i) => i?.name === hitPlan.name);
+      if (completed) {
+        logger.info("用户已服药，跳过计划 %o", hitPlan);
+        return;
+      }
+
+      this.feishu.sendMessage(
+        CardMessage(owner, "notify", {
+          title: `${hitPlan.name}记得吃药哦～`,
+          name: hitPlan.name,
+        }),
+      );
+    });
   }
 
   handler(event: FeishuEvent): CardResponse | undefined {
+    if (event.type === "Cron") {
+      this.cronHandler(event);
+      return;
+    }
     if (event.type === "Menu") {
       if (!event.value.operator?.operator_id?.open_id) {
         logger.error("No OpenId");
@@ -47,7 +131,7 @@ export class EventHandler {
       if (event.key === MenuActions.PlanAddition) {
         this.feishu.sendMessage(
           CardMessage(id, event.key, {
-            time: "10:00 +0800",
+            time: "10:00",
           }),
         );
         return;
@@ -152,6 +236,15 @@ export class EventHandler {
           (i) => i.name === (action.value as any).name,
         );
 
+        if (planIndex === -1) {
+          return {
+            toast: CardToast(
+              "warning",
+              `找不到计划 ${(action.value as any).name}`,
+            ),
+          };
+        }
+
         const nameChanged =
           planList[planIndex].name !== action.form_value?.name;
 
@@ -203,9 +296,7 @@ export class EventHandler {
               time: planList[planIndex].time,
             }),
           );
-          return {
-            toast: CardToast("info", "收到修改"),
-          };
+          return {};
         }
 
         if (payload.action === "delete") {

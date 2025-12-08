@@ -1,16 +1,16 @@
-import { DataSource } from "../db/index.js";
+import { FeishuClient } from "../lib/feishu.js";
 import { logger } from "./logger.js";
 
 export function onProcessTerm({
-  dataSource,
   server,
+  feishu,
 }: {
   server: Bun.Server<unknown>;
-  dataSource?: DataSource;
+  feishu: FeishuClient;
 }) {
   function safeTerm() {
     server.stop();
-    dataSource?.term();
+    feishu.stop();
 
     logger.info("[Server] 清理完成，退出任务");
     process.exit();

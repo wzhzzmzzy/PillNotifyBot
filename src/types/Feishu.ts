@@ -10,11 +10,21 @@ export type EventPayload<
   K extends keyof Parameters<EventDispatcher["register"]>[0],
 > = Parameters<NonNullable<Parameters<EventDispatcher["register"]>[0][K]>>[0];
 
-export type FeishuEvent = MessageEvent | BotEvent | MenuEvent | CardEvent;
+export type FeishuEvent =
+  | MessageEvent
+  | BotEvent
+  | MenuEvent
+  | CardEvent
+  | CronEvent;
 
 type EventKV<K, V> = {
   key: K;
   value: V;
+};
+
+export type CronEvent = {
+  type: "Cron";
+  key: "notify";
 };
 
 export type MessageEvent = {} & {

@@ -1,12 +1,13 @@
 import * as lark from "@larksuiteoapi/node-sdk";
 import { logger } from "../utils/logger.js";
 import { CardAction, FeishuMessage } from "../types/Feishu.js";
-import { EventHandler } from "./event.js";
+import { EventHandler } from "./events/index.js";
 import { MenuActions } from "../const/menu.js";
 
 export class FeishuClient {
   private larkClient: lark.Client;
   private larkWsClient: lark.WSClient;
+  event?: EventHandler;
 
   constructor() {
     this.larkClient = new lark.Client({
@@ -26,8 +27,13 @@ export class FeishuClient {
     this.initWsEvent();
   }
 
+  stop() {
+    this.event?.stop();
+  }
+
   initWsEvent() {
     const event = new EventHandler({ feishu: this });
+    this.event = event;
     this.larkWsClient.start({
       // 处理「接收消息」事件，事件类型为 im.message.receive_v1
       eventDispatcher: new lark.EventDispatcher({}).register({

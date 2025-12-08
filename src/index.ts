@@ -10,9 +10,14 @@ const server = Bun.serve({
   hostname: "0.0.0.0",
   routes: {
     "/healthy": new Response("Ok"),
+    "/notify": () => {
+      feishu.event?.cron.job.trigger();
+      return new Response("Ok");
+    },
   },
 });
 
 onProcessTerm({
   server,
+  feishu,
 });
