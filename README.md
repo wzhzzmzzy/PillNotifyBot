@@ -1,11 +1,25 @@
-To install dependencies:
-```sh
-bun install
+## 吃药提醒飞书机器人
+
+定时给用户发送飞书消息，提醒吃药
+
+### Requirements
+
+本地运行环境变量（`.env.local`）
+
+- `APP_ID`: 飞书机器人 ID
+- `APP_SECRET`: 飞书机器人密钥
+- `APP_ENV`: 值为 dev 时，日志文件输出到当前目录下
+
+使用 Bun >= 1.3 运行，所有数据存储在本地 SQLite
+
+需要的卡片配置参考 `src/const/cardkit` 目录下的卡片 JSON
+
+### Usage
+
+```
+bun run src/index.ts
 ```
 
-To run:
-```sh
-bun run dev
-```
+### TODO
 
-open http://localhost:3000
+- [ ] 支持通过卡片修改提醒间隔
