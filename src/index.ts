@@ -1,4 +1,5 @@
 import { FeishuClient } from "./lib/feishu.js";
+import { updateText } from "./lib/quote.js";
 import { logger } from "./utils/logger.js";
 import { onProcessTerm } from "./utils/process.js";
 
@@ -13,6 +14,11 @@ const server = Bun.serve({
     "/notify": () => {
       feishu.event?.cron.job.trigger();
       return new Response("Ok");
+    },
+    "/quote/updateText": async (options) => {
+      const body = await options.json();
+      const updateResult = await updateText(body);
+      return new Response(updateResult);
     },
   },
 });
