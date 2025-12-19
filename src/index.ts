@@ -18,7 +18,7 @@ const server = Bun.serve({
     "/quote/updateText": async (options) => {
       const body = await options.json();
       const updateResult = await updateText(body);
-      return new Response(updateResult);
+      return Response.json(updateResult);
     },
   },
 });

@@ -8,7 +8,6 @@ export class Scheduler {
     this.job = new Cron("0 * * * * *", () => {
       this.cronJobs.forEach((j) => j());
     });
-    this.job.pause();
   }
 
   on(job: () => void) {

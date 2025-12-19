@@ -88,13 +88,10 @@ export class EventHandler {
           minuteOfDay += i.interval;
         }
       });
-      logger.info(
-        "计划触发事件 %s",
-        hitTime.map((i) => i.minuteOfDay).join(","),
-      );
 
       const hitPlan = hitTime.find((m) => m.minuteOfDay === minuteOfDay);
       if (!hitPlan) {
+        logger.info("当前时间 %s, 无计划命中", minuteOfDay);
         return;
       }
 
@@ -160,14 +157,11 @@ export class EventHandler {
           ?.filter((i) => !stages.some((s) => s?.id === i.id))
           .map((i) => i.name)
           .join(",");
-        this.feishu.sendMessage(
-          PlainText(
-            id,
-            `今天吃了：${stages.map((i) => i?.name).join(",")}
-还没有吃：${todoList}
-`,
-          ),
-        );
+        const hasEaten = stages.map((i) => i?.name).join(",");
+        let msg = hasEaten ? `今天吃了：${hasEaten}` : "";
+        if (todoList) msg += `还没有吃：${todoList}`;
+        if (!msg) msg = "还没有配置计划哦";
+        this.feishu.sendMessage(PlainText(id, msg));
         return;
       }
 
@@ -218,14 +212,16 @@ export class EventHandler {
           interval: (action.form_value?.interval as number) || 60,
         });
         this.db.createOrUpdateMedicationPlan(id, plan);
+        console.log("saved", id, plan);
 
         return {
           toast: CardToast("success", "保存成功"),
           card: CardContent(MenuActions.PlanAddition, {
             event: MenuActions.PlanAddition,
             save: true,
-            name: action.form_value?.name,
-            time: action.form_value?.time,
+            // FIXME: 添加这两个参数之后，新增保存会出问题
+            // name: action.form_value?.name,
+            // time: action.form_value?.time,
           }),
         };
       }
