@@ -158,8 +158,8 @@ export class EventHandler {
           .map((i) => i.name)
           .join(",");
         const hasEaten = stages.map((i) => i?.name).join(",");
-        let msg = hasEaten ? `今天吃了：${hasEaten}` : "";
-        if (todoList) msg += `还没有吃：${todoList}`;
+        let msg = hasEaten ? `今天吃了：${hasEaten}。\n` : "";
+        if (todoList) msg += `还没有吃：${todoList}。`;
         if (!msg) msg = "还没有配置计划哦";
         this.feishu.sendMessage(PlainText(id, msg));
         return;

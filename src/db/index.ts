@@ -1,6 +1,7 @@
 import { Database } from "bun:sqlite";
 import { MEDICATION_PLAN_TABLE, MEDICATION_RECORDS_TABLE } from "./tables.js";
 import { logger } from "../utils/logger.js";
+import { drizzle } from "drizzle-orm/bun-sql"
 
 // 服药配置的接口定义
 export interface MedicationStageConfig {
@@ -32,6 +33,7 @@ export interface MedicationRecord {
 
 export class DataSource {
   db: Database;
+  // drizzle: ReturnType<typeof drizzle>;
 
   constructor(dbPath = "pill.sqlite") {
     this.db = new Database(dbPath, { create: true });
@@ -39,6 +41,8 @@ export class DataSource {
 
     this.db.run(MEDICATION_PLAN_TABLE);
     this.db.run(MEDICATION_RECORDS_TABLE);
+
+    // this.drizzle = drizzle(import.meta.env.DATABASE_URL)
   }
 
   term() {
@@ -99,7 +103,7 @@ export class DataSource {
    * @returns 返回用户今天的所有服药记录
    */
   getTodayMedicationRecords(owner: string): MedicationRecord[] {
-    const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
+    const today = new Date().toLocaleString().split("T")[0]; // 格式: YYYY-MM-DD
     return this.getMedicationRecordsByDate(owner, today);
   }
 
@@ -161,7 +165,7 @@ export class DataSource {
    * @returns 创建的记录 ID
    */
   recordMedication(owner: string, stageId: number): number {
-    const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
+    const today = new Date().toLocaleString().split("T")[0]; // 格式: YYYY-MM-DD
 
     console.log("db:", owner, stageId);
     const stmt = this.db.prepare(`
@@ -170,25 +174,6 @@ export class DataSource {
     `);
 
     const result = stmt.run(today, stageId, owner);
-    return result.lastInsertRowid as number;
-  }
-
-  /**
-   * 创建一个"未服用"的记录（用于定时任务触发时）
-   * @param owner 用户的 open_id
-   * @param stageId 服药阶段 ID
-   * @returns 创建的记录 ID
-   */
-  createPendingMedicationRecord(owner: string, stageId: number): number {
-    const today = new Date().toISOString().split("T")[0]; // 格式: YYYY-MM-DD
-    const pendingTime = new Date(0); // 使用 1970-01-01 表示未服用状态
-
-    const stmt = this.db.prepare(`
-      INSERT INTO medication_records (create_at, stage, owner, medication_time)
-      VALUES (?, ?, ?, ?)
-    `);
-
-    const result = stmt.run(today, stageId, owner, pendingTime.toISOString());
     return result.lastInsertRowid as number;
   }
 

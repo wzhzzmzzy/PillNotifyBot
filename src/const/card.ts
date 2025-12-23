@@ -6,14 +6,14 @@ import { MenuActions } from "./menu.js";
 export const PillPlanListCard = (params?: {
   plan_list: MedicationStageConfig[];
 }) => ({
-  templateId: "AAqX1qI4FLrt1",
-  templateVersion: "1.0.2",
+  templateId: "AAqX2KB0LxqnW",
+  templateVersion: "1.0.0",
   templateVariable: params,
 });
 
 export const PillNotifyCard = (params?: { title: string }) => ({
-  templateId: "AAqXfv48ZgpjT",
-  templateVersion: "1.0.6",
+  templateId: "AAqX2KfrT4NlZ",
+  templateVersion: "1.0.0",
   templateVariable: params,
 });
 
@@ -28,8 +28,8 @@ type PillPlanAdditionCardVariable = {
 export const PillPlanAdditionCard = (
   params?: PillPlanAdditionCardVariable,
 ) => ({
-  templateId: "AAqXibjpaXkjl",
-  templateVersion: "1.0.9",
+  templateId: "AAqX229SuFGdN",
+  templateVersion: "1.0.0",
   templateVariable: params,
 });
 
